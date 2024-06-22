@@ -139,7 +139,11 @@ class Make_Invoice:
 
 
 if __name__ == '__main__':
+
     from aade_api import AadeApi
+    from environs import Env
+    env = Env()
+    env.read_env()
 
     ldt = par.InvData(
         lines=[
@@ -152,7 +156,7 @@ if __name__ == '__main__':
         ]
     )
     invoice = Make_Invoice()
-    invoice.issuer_afm = "123456789"
+    invoice.issuer_afm = env.str('_AFM')
     invoice.issuer_branch = '4'
     invoice.counterpart_afm = '094077783'
     invoice.counterpart_name = 'ΑΒΓΔΕ'
@@ -160,7 +164,7 @@ if __name__ == '__main__':
     invoice.counterpart_postalCode = '12345'
     invoice.counterpart_city = 'ΚΑΛΑΜΑΤΑ'
     invoice.header_series = 'AB'
-    invoice.header_aa = '1'
+    invoice.header_aa = '19'
     invoice.header_issueDate = '2020-01-01'
     invoice.header_invoiceType = '1.1'
     invoice.header_movePurpose = '8'
