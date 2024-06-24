@@ -25,7 +25,7 @@ counterpart.city = 'chalkida'
 counterpart.setCounterpart()
 
 header = Header_()
-header.series = 'AD'
+header.series = 'ΑΑ'
 header.aa = '19'
 header.issueDate = '2020-01-01'
 header.typ = '1.1'
@@ -58,19 +58,12 @@ summary = Summary()
 summary.setSummary(ldt)
 
 xml = ET.tostring(root, encoding="UTF-8", xml_declaration=True)
-xmlstr = minidom.parseString(xml).toprettyxml(indent="   ")
-# print(xmlstr)
+xmlstr = minidom.parseString(xml).toprettyxml(indent="   ")# print(xmlstr)
 
 ihd = InvoiceHead(afm=issuer.afm, date=header.issueDate, branch=issuer.branch, type=header.typ, series=header.series , aa=header.aa, cafm=counterpart.afm)
-
-
 sendInvoice = SendInvoice()
 sendInvoice.xml = xml
 
-# res = sendInvoice.SendInvoices( ihd )
-# l = sendInvoice._check_response(res)
-# print(l)
-#
-Cance =  CancelInvoice(Mark='0101010459')
-
-print(Cance)
+res = sendInvoice.SendInvoices( ihd )
+response = sendInvoice.getResponse(res)
+print(response)
