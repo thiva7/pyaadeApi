@@ -39,8 +39,14 @@ class AadeApi:
                             data=xml, verify=self.verify, timeout=10)
         return res.text
 
-    def cancel_invoice(self, mark4canceling):
-        url = f"{self.url}/CancelInvoice?mark={mark4canceling}"
+    def cancel_invoice(self, mark4canceling ,  entityVatNumber=''):
+        if entityVatNumber != '':
+            entity = f"&entityVatNumber={entityVatNumber}"
+        else:
+            entity = ''
+
+        url = f"{self.url}/CancelInvoice?mark={mark4canceling}{entity}"
+
         res = requests.post(url, headers=self._headers,
                             verify=self.verify, timeout=10)
         return res.text
@@ -92,12 +98,5 @@ class AadeApi:
             return []
 
 
-def find_send_dublicates(api: AadeApi, apo: str, eos: str) -> dict[str, list]:
-    xml = api.request_transmitted_docs(apo, eos)
-    invoices = xmlp.parse_xml_invoices(xml)
-    uid_mark: dict[str, list] = {}
-    for inv in invoices:
-        uid = inv['uid']
-        uid_mark[uid] = uid_mark.get(uid, [])
-        uid_mark[uid].append(inv['mark'])
-    return uid_mark
+def SetApi():
+    return AadeApi(True,  True)

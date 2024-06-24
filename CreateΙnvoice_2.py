@@ -1,7 +1,6 @@
 from Invoice import *
 from xml.etree import ElementTree as ET
 from xml.dom import minidom
-from aade_api import AadeApi
 import parameters as par
 from environs import Env
 
@@ -26,16 +25,14 @@ counterpart.city = 'chalkida'
 counterpart.setCounterpart()
 
 header = Header_()
-header.series = 'AB'
-header.aa = '14'
+header.series = 'AD'
+header.aa = '19'
 header.issueDate = '2020-01-01'
 header.typ = '1.1'
 header.currency = 'EUR'
-header.dispatchDate = '2020-01-01'
-header.dispatchTime = '12:00:00'
-header.vehicleNumber = '1234'
 header.purpose = '8'
 header.setHeader()
+
 
 payment = Payment()
 payment.typ = '3'
@@ -49,8 +46,8 @@ ldt = par.InvData(
         par.LData('category1_1', 'E3_561_001', value=428, vatcat=1 ),
     ] ,
     per_invoice_taxes= [
-        par.TaxData(value=156, taxType=2, taxTypeCategory=9 , taxTypePrice=4.2),
-        par.TaxData(value=156, taxType=1, taxTypeCategory=1),
+        # par.TaxData(value=156, taxType=2, taxTypeCategory=9 , taxTypePrice=4.2),
+        # par.TaxData(value=156, taxType=1, taxTypeCategory=1),
     ]
 )
 
@@ -62,16 +59,20 @@ summary.setSummary(ldt)
 
 xml = ET.tostring(root, encoding="UTF-8", xml_declaration=True)
 xmlstr = minidom.parseString(xml).toprettyxml(indent="   ")
-print(xmlstr)
+# print(xmlstr)
 
-test_api = AadeApi(True,  True)
+
 
 ihd = InvoiceHead(afm=issuer.afm, date=header.issueDate, branch=issuer.branch, type=header.typ, series=header.series , aa=header.aa, cafm=counterpart.afm)
+
 
 sendInvoice = SendInvoice()
 sendInvoice.xml = xml
 
-res = sendInvoice.SendInvoices(test_api  , ihd )
-l = sendInvoice._check_response(res)
-print(l)
+# res = sendInvoice.SendInvoices( ihd )
+# l = sendInvoice._check_response(res)
+# print(l)
+#
+Cance =  CancelInvoice(Mark='400001929239180')
 
+print(Cance)

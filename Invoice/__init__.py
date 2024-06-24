@@ -1,4 +1,4 @@
-from .invoiceElement import invoice , root
+from .invoiceElement import invoice , root , api_url
 import parameters as par
 from . import issuer as isur
 from . import counterPart
@@ -7,13 +7,16 @@ from . import payment
 from . import lines
 from . import summary
 from . import sendInvoice
+from . import cancelInvoice
 from invoiceData import InvoiceHead
+
 
 def issuer():
     issuer_ = isur.Issuer()
     return issuer_
 
 def Counterpart():
+
     coumterpart = counterPart.Counterpart()
     return coumterpart
 
@@ -36,4 +39,9 @@ def Summary():
 def SendInvoice():
     send = sendInvoice.SendInvoice()
     return send
+
+def CancelInvoice(Mark , entityVatNumber=''):
+    cancel = cancelInvoice.CancelInvoice()
+    res = cancel.SendCancel(Mark=Mark , entityVatNumber=entityVatNumber)
+    return res
 

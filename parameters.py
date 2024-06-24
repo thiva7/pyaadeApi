@@ -89,7 +89,7 @@ class LData:
         7: ["Άνευ Φ.Π.Α.", 0],
         8: ["Εγγραφές χωρίς ΦΠΑ"],
         9: ["ΦΠΑ συντελεστής 3%"]
-    @param vatExc: Κατηγορία Απαλλαγής ΦΠΑ || πιθανές τιμές:
+    @param vatExemptionCategory: Κατηγορία Απαλλαγής ΦΠΑ || πιθανές τιμές:
         δες στο helper.py τη συνάρτηση vatExemptionCategories()
     @param taxType: Είδος Φόρου || πιθανές τιμές:
         1 = Παρακρατούμενος Φόρος
@@ -99,22 +99,20 @@ class LData:
         5 = Κρατήσεις # δεν εχει υλοποιηθεί ακομα
     @param taxTypeCategory: Κατηγορία Φόρου
     @param taxTypePrice: Ποσό Φόρου || οταν ο φόρος είναι << ποσό >>
+    
+    vatExc
     """
     ccat: str
     ctype: str
     value: float
     vatcat: int
-    vatExc: Optional[int] = field(default=None)
+    vatExemptionCategory: Optional[int] = field(default=None)
     taxType: Optional[int] = field(default=0)
     taxTypeCategory: Optional[int] = field(default=None)
     taxTypePrice: Optional[float] = field(default=None)
     Helper = helper.Helper()
 
-    def __post_init__(self):
-        if self.vatcat == 7 and (self.vatExc is None or self.vatExc == ''):
-            raise ValueError("vatExemptionCategory (vatExc) is required when vatCategory is 7")
-        if self.taxType != 0 and self.taxTypeCategory is None:
-            raise ValueError("taxTypeCategory is required when taxType is set")
+  
 
     @property
     def vat(self):

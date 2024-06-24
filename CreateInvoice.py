@@ -163,10 +163,13 @@ if __name__ == '__main__':
     invoice.counterpart_street = 'ΖΗΘΙ'
     invoice.counterpart_postalCode = '12345'
     invoice.counterpart_city = 'ΚΑΛΑΜΑΤΑ'
-    invoice.header_series = 'AB'
+    invoice.header_series = 'AE'
     invoice.header_aa = '19'
     invoice.header_issueDate = '2020-01-01'
     invoice.header_invoiceType = '1.1'
+    invoice.header_currency = 'EUR'
+    invoice.header_dispatchDate = '2020-01-01'
+    invoice.header_dispatchTime = '12:00:00'
     invoice.header_movePurpose = '8'
     invoice.payment_info = "Hey, I am paying you!"
     invoice.setIssuer()
@@ -175,6 +178,9 @@ if __name__ == '__main__':
     invoice.setPayment( ldt)
     invoice.setLines(ldt)
     invoice.setSummary(ldt)
+    xmlstr = minidom.parseString(invoice.create_xml()).toprettyxml(indent="   ")
+    # print(xmlstr)
+
     test_api = AadeApi(True,  True)
 
     res = invoice.SendInvoices(test_api)

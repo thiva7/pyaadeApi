@@ -42,7 +42,7 @@ class InvoiceParts:
             SubElement(address, "city").text = city
         return cpart
 
-    def header(self, parent, *, series, aa, date, typ, currency='EUR', dispatchDate=None, dispatchTime=None,
+    def header(self, parent, *, series, aa, date, typ, currency='EUR', correlatedInvoices= None, selfPricing=None ,dispatchDate=None, dispatchTime=None,
                vehicleNumber=None, purpose=None):
         head = SubElement(parent, "invoiceHeader")
         SubElement(head, "series").text = series
@@ -52,22 +52,33 @@ class InvoiceParts:
         SubElement(head, "currency").text = currency
         ####
         # exchangeRate εαν δεν ειναι EUR
+
+        if correlatedInvoices is not None:
+            SubElement(head, "correlatedInvoices").text = correlatedInvoices
+        if selfPricing is not None:
+            SubElement(head, "selfPricing").text = selfPricing
+
         # correlatedInvoices
         # selfPricing
         ####correlatedInvoices
-        if dispatchDate and dispatchTime and vehicleNumber and purpose:
-            self.move_purpose(head, dispatchDate=dispatchDate, dispatchTime=dispatchTime, vehicleNumber=vehicleNumber,
+        self.move_purpose(head, dispatchDate=dispatchDate, dispatchTime=dispatchTime, vehicleNumber=vehicleNumber,
                               purpose=purpose)
         ####
         # fuelInvoice
         ####
         return head
 
-    def move_purpose(self, parent, *, dispatchDate, dispatchTime, vehicleNumber, purpose):
-        SubElement(parent, "dispatchDate").text = dispatchDate
-        SubElement(parent, "dispatchTime").text = dispatchTime
-        SubElement(parent, "vehicleNumber").text = vehicleNumber
-        SubElement(parent, "movePurpose").text = str(purpose)
+    def move_purpose(self, parent, *, dispatchDate='', dispatchTime='', vehicleNumber='', purpose=''):
+        elements = {
+            "dispatchDate": dispatchDate,
+            "dispatchTime": dispatchTime,
+            "vehicleNumber": vehicleNumber,
+            "movePurpose": purpose
+        }
+        for tag, text in elements.items():
+            if text:
+                SubElement(parent, tag).text = str(text)
+
 
     def payment(self, parent, *, typ, amount, info):
         paymeth = SubElement(parent, "paymentMethods")
@@ -127,8 +138,8 @@ class InvoiceParts:
             SubElement(det, "stampDutyAmount").text = f'{line.taxTypesStampDuty:.2f}'
             SubElement(det, "stampDutyPercentCategory").text = str(line.taxTypeCategory)
 
-        if line.vatcat == 7:  # προσθήκη κατηγορίας απαλλαγής ΦΠΑ για τις εξαιρέσεις
-            SubElement(det, "vatExemptionCategory").text = f'{line.vatExc}'
+        if line.vatExemptionCategory is not None:  # προσθήκη κατηγορίας απαλλαγής ΦΠΑ για τις εξαιρέσεις
+            SubElement(det, "vatExemptionCategory").text = f'{line.vatExemptionCategory}'
         self.income_classification(det, line.ctype, line.ccat, line.value)
         return det
 

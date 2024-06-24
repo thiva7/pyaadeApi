@@ -1,5 +1,5 @@
 from invoiceData import  InvoiceParts as prt
-from . import root, invoice
+from . import root, invoice , api_url
 
 import xml.etree.ElementTree as ET
 import json
@@ -14,16 +14,13 @@ class SendInvoice:
         uids = api.request_uids(dat)
         return uid in uids
 
-
-    def SendInvoices(self, api  , ihd ):
-        # InvoiceHead(afm='144960927', date='2020-01-01', branch='4', type='1.1', series='AB', aa='1', cafm='094077783')
-
+    def SendInvoices(self,  ihd ):
         if not can_be_afm(ihd.afm):
             return '{"message" :  Invalid issuer AFM}'
-        if self.is_uid_in_aade(api, ihd.uid, ihd.date):
+        if self.is_uid_in_aade(api_url, ihd.uid, ihd.date):
             return {"message": "Invoice already exists"}
 
-        response = api.send_invoices(self.xml)
+        response = api_url.send_invoices(self.xml)
         # check if response is xml or json
         if response.startswith('<?xml'):
             return response
@@ -32,7 +29,7 @@ class SendInvoice:
             return response
 
 
-    def _check_response(self, response):
+    def getResponse(self, response):
         if '<?xml' in response:
             root = ET.fromstring(response)
             status_code = root.find('response/statusCode').text

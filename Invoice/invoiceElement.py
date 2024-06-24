@@ -1,4 +1,6 @@
 import xml.etree.ElementTree as ET
+from aade_api import SetApi
+
 
 
 AADE_ATTRIBUTES = {
@@ -13,3 +15,4 @@ AADE_ATTRIBUTES = {
 root = ET.Element("InvoicesDoc", attrib=AADE_ATTRIBUTES)
 invoice = ET.SubElement( root, "invoice")
 
+api_url = SetApi()
