@@ -90,7 +90,8 @@ class InvoiceParts:
 
     def income_classification(self, parent, typ, category, amount):
         det_clas = SubElement(parent, "incomeClassification")
-        SubElement(det_clas, "icls:classificationType").text = typ
+        if typ != '-':
+            SubElement(det_clas, "icls:classificationType").text = typ
         SubElement(det_clas, "icls:classificationCategory").text = category
         SubElement(det_clas, "icls:amount").text = f'{amount:.2f}'
         return det_clas
